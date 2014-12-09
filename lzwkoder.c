@@ -25,7 +25,7 @@ struct trie_node *trie_root = NULL;
 struct trie_node *create_node() {
     struct trie_node *q = (struct trie_node*) malloc( sizeof(struct trie_node) );
     for(int x=0 ; x < ALPH_SIZE ; x++)
-    q->link[x] = NULL;
+        q->link[x] = NULL;
     q->index = q->value = -1;
     return q;
 }
@@ -34,24 +34,13 @@ struct trie_node *create_node() {
 void start_dictionary()
 {
 	trie_root = create_node();
-    //char bla[5] = {'a', 'b', 'c', 'd'};
-	for (int i=32; i<127; i++) {
+	for (int i=0; i<127; i++) {
 		struct trie_node *q = create_node();
 		q->index = counter;
 		q->value = (char) i;
         trie_root->link[counter] = q;
-        //printf("%c\n", trie_root->link[counter]->value );
         counter++;
     }
-    /*for (int i=0; i<4; i++) {
-		struct trie_node *q = create_node();
-		q->index = counter;
-		q->value = bla[i];
-        trie_root->link[counter] = q;
-        //printf("%c\n", trie_root->link[counter]->value );
-        counter++;
-    }*/
-    
 }
 
 
@@ -74,30 +63,23 @@ void get_input()
    			new = (struct node *) malloc( sizeof(struct node) );
    			new->next = NULL;
    			walker->character = character;
-   			//printf("%c ", walker->character);
    			walker->next = new;
    			walker = walker->next;   		}
    	}
-     walker = NULL;
-    //if (walker->character == '\0')
-    //printf("%s", " nooooo ");
-    
+    walker = NULL;
    	fclose(f);
 }
 
-/*void printer()
+
+void add_word(struct trie_node *monkey, struct node *walker, int i)
 {
-    get_input();
-    struct node *walker;
-	walker = (struct node *) malloc( sizeof(struct node) );
-    for (walker = root; walker->next != NULL; walker=walker->next){
-        printf("%c ", walker->character);
-        if (walker->character == '\0') {
-            printf("%s\n", "krivo");
-        }
-    }
+    monkey->link[i] = create_node();
+    monkey->link[i]->value = walker->character;
+    monkey->link[i]->index = counter;
+    counter++;
+    printf("%hu ", monkey->index);
 }
-*/
+
 
 void code()
 {
@@ -123,13 +105,9 @@ void code()
 				}
 			}
 			else
-            i++;
+                i++;
 		}
-		monkey->link[i] = create_node();
-		monkey->link[i]->value = walker->character;
-		monkey->link[i]->index = counter;
-		counter++;
-		printf("%hu ", monkey->index);
+        add_word(monkey, walker, i);
 		monkey = trie_root;
 	} while (walker->next != NULL && walker->next->character != '\0');
 	for (int i = 0 ; i < ALPH_SIZE; i++){
@@ -138,8 +116,6 @@ void code()
 			return;
 		}
 	}
-    
-    
 }
 
 
@@ -147,10 +123,8 @@ int main(int argc, const char * argv[])
 {
     root = (struct node *) malloc( sizeof(struct node) );
     root->next = NULL;
-    //get_input();
-    code();
-    //printer();
     
+    code();
     
     return 0;
 }

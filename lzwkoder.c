@@ -34,7 +34,7 @@ struct trie_node *create_node() {
 void start_dictionary()
 {
 	trie_root = create_node();
-	for (int i=0; i<127; i++) {
+	for (int i=0; i<ALPH_SIZE; i++) {
 		struct trie_node *q = create_node();
 		q->index = counter;
 		q->value = (char) i;

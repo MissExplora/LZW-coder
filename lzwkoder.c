@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #define ALPH_SIZE 256
 
-
+FILE *writer;
 unsigned short int counter = 0;
 
 struct node {
@@ -44,7 +44,7 @@ void start_dictionary()
 }
 
 
-void get_input()
+void get_input(const char * argv[])
 {
 	char character;
     
@@ -52,7 +52,7 @@ void get_input()
 	walker = root;
     
 	FILE *f;
-	f = fopen("/Users/Dora/Desktop/TINF labos/ulazna", "r");
+	f = fopen(argv[1], "r");
 	
 	if( f == NULL ) {
     	perror("Error while opening the file.\n");
@@ -77,13 +77,14 @@ void add_word(struct trie_node *monkey, struct node *walker, int i)
     monkey->link[i]->value = walker->character;
     monkey->link[i]->index = counter;
     counter++;
-    printf("%hu ", monkey->index);
+    fwrite(&monkey->index, sizeof(unsigned short), 1, writer);
+    //printf("%hu ", monkey->index);
 }
 
 
 void code()
 {
-    get_input();
+    //get_input();
 	struct node *walker;
 	struct trie_node *monkey;
     
@@ -100,7 +101,8 @@ void code()
 					i=0;
 				}
 				else {
-					printf("%hu ", monkey->link[i]->index);
+					fwrite(&monkey->link[i]->index, sizeof(unsigned short), 1, writer);
+					//printf("%hu ", monkey->link[i]->index);
 					return;
 				}
 			}
@@ -112,7 +114,8 @@ void code()
 	} while (walker->next != NULL && walker->next->character != '\0');
 	for (int i = 0 ; i < ALPH_SIZE; i++){
 		if (monkey->link[i]->value == walker->character) {
-			printf("%hu ", monkey->link[i]->index);
+			fwrite(&monkey->link[i]->index, sizeof(unsigned short), 1, writer);
+			//printf("%hu ", monkey->link[i]->index);
 			return;
 		}
 	}
@@ -123,8 +126,13 @@ int main(int argc, const char * argv[])
 {
     root = (struct node *) malloc( sizeof(struct node) );
     root->next = NULL;
+    get_input(argv);
+    
+    writer = fopen(argv[2], "wb");
     
     code();
+    
+    fclose(writer);
     
     return 0;
 }

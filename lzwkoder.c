@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define ALPH_SIZE 256
+#define DICT_SIZE 65535
 
 FILE *writer;
 unsigned short int counter = 0;
@@ -16,7 +17,7 @@ struct node *root;
 struct trie_node {
 	unsigned short int index;
 	char value;
-	struct trie_node *link[ALPH_SIZE];
+	struct trie_node *link[DICT_SIZE];
 };
 
 struct trie_node *trie_root = NULL;
@@ -24,7 +25,7 @@ struct trie_node *trie_root = NULL;
 
 struct trie_node *create_node() {
     struct trie_node *q = (struct trie_node*) malloc( sizeof(struct trie_node) );
-    for(int x=0 ; x < ALPH_SIZE ; x++)
+    for(int x=0 ; x < DICT_SIZE ; x++)
         q->link[x] = NULL;
     q->index = q->value = -1;
     return q;
@@ -93,7 +94,7 @@ void code()
     monkey = trie_root;
 	do {
 		int i = 0;
-		while ((monkey->link[i] != NULL) && (i < ALPH_SIZE)){
+		while ((monkey->link[i] != NULL) && (i < DICT_SIZE)){
 			if (monkey->link[i]->value == walker->character) {
 				if (walker->next != NULL && walker->next->character != '\0') {
 					walker = walker->next;
@@ -109,10 +110,12 @@ void code()
 			else
                 i++;
 		}
-        add_word(monkey, walker, i);
+		if (counter < 65535) {
+        	add_word(monkey, walker, i);
+    	}
 		monkey = trie_root;
 	} while (walker->next != NULL && walker->next->character != '\0');
-	for (int i = 0 ; i < ALPH_SIZE; i++){
+	for (int i = 0 ; i < DICT_SIZE; i++){
 		if (monkey->link[i]->value == walker->character) {
 			fwrite(&monkey->link[i]->index, sizeof(unsigned short), 1, writer);
 			//printf("%hu ", monkey->link[i]->index);

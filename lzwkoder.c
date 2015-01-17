@@ -113,6 +113,9 @@ void code()
 		if (counter < 65535) {
         	add_word(monkey, walker, i);
     	}
+    	else {
+    		fwrite(&monkey->index, sizeof(unsigned short), 1, writer);
+    	}
 		monkey = trie_root;
 	} while (walker->next != NULL && walker->next->character != '\0');
 	for (int i = 0 ; i < DICT_SIZE; i++){
